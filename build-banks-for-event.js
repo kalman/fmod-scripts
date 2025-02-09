@@ -24,7 +24,7 @@ function execute() {
 }
 
 studio.menu.addMenuItem({
-    name: "Build banks for event",
+    name: "Build Banks for Event",
     execute: execute,
     keySequence: "F8",
 });
