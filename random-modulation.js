@@ -11,8 +11,7 @@ function executor(property, increase) {
         });
 
         if (!mod) {
-            if (!increase)
-            {
+            if (!increase) {
                 return;
             }
             mod = inst.addModulator("RandomizerModulator", property);
@@ -31,25 +30,25 @@ function executor(property, increase) {
 }
 
 studio.menu.addMenuItem({
-    name: "Modulation: Random Pitch+",
+    name: "Modulate Random Pitch+",
     execute: executor("pitch", true),
-    keySequence: "Ctrl+Alt+P",
+    keySequence: "Alt+P",
 });
 
 studio.menu.addMenuItem({
-    name: "Modulation: Random Pitch-",
+    name: "Modulate Random Pitch-",
     execute: executor("pitch", false),
-    keySequence: "Ctrl+Alt+O",
+    keySequence: "Alt+O",
 });
 
 studio.menu.addMenuItem({
-    name: "Modulation: Random Volume+",
+    name: "Modulate Random Volume+",
     execute: executor("volume", true),
-    keySequence: "Ctrl+Alt+V",
+    keySequence: "Alt+V",
 });
 
 studio.menu.addMenuItem({
-    name: "Modulation: Random Volume-",
+    name: "Modulate Random Volume-",
     execute: executor("volume", false),
-    keySequence: "Ctrl+Alt+C",
+    keySequence: "Alt+C",
 });
