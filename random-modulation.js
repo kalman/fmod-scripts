@@ -32,23 +32,23 @@ function executor(property, increase) {
 studio.menu.addMenuItem({
     name: "Modulate Random Pitch+",
     execute: executor("pitch", true),
-    keySequence: "Alt+P",
+    keySequence: "Ctrl+Alt+P",
 });
 
 studio.menu.addMenuItem({
     name: "Modulate Random Pitch-",
     execute: executor("pitch", false),
-    keySequence: "Alt+O",
+    keySequence: "Ctrl+Alt+O",
 });
 
 studio.menu.addMenuItem({
     name: "Modulate Random Volume+",
     execute: executor("volume", true),
-    keySequence: "Alt+V",
+    keySequence: "Ctrl+Alt+V",
 });
 
 studio.menu.addMenuItem({
     name: "Modulate Random Volume-",
     execute: executor("volume", false),
-    keySequence: "Alt+C",
+    keySequence: "Ctrl+Alt+C",
 });

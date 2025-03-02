@@ -50,11 +50,11 @@ function executor(forward) {
 studio.menu.addMenuItem({
     name: "Move End Marker+",
     execute: executor(true),
-    keySequence: "Alt+E",
+    keySequence: "Ctrl+Alt+E",
 });
 
 studio.menu.addMenuItem({
     name: "Move End Marker-",
     execute: executor(false),
-    keySequence: "Alt+W",
+    keySequence: "Ctrl+Alt+W",
 });
