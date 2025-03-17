@@ -1,31 +1,31 @@
 function executor(property, increase) {
     return function () {
-        const inst = studio.window.editorCurrent();
-
-        if (!inst || !inst.isOfType("Sound")) {
-            return;
-        }
-
-        var mod = inst.modulators.find(function (m) {
-            return m.isOfType("RandomizerModulator") && m.nameOfPropertyBeingModulated === property;
-        });
-
-        if (!mod) {
-            if (!increase) {
+        studio.window.editorSelection().forEach(function (inst) {
+            if (!inst || !inst.isOfType("Sound")) {
                 return;
             }
-            mod = inst.addModulator("RandomizerModulator", property);
-        }
 
-        var newValue = increase
-            ? Math.floor(mod.properties.amount.value + 1)
-            : Math.ceil(mod.properties.amount.value - 1);
+            var mod = inst.modulators.find(function (m) {
+                return m.isOfType("RandomizerModulator") && m.nameOfPropertyBeingModulated === property;
+            });
 
-        if (newValue === 0) {
-            studio.project.deleteObject(mod);
-        } else {
-            mod.properties.amount.setValue(newValue);
-        }
+            if (!mod) {
+                if (!increase) {
+                    return;
+                }
+                mod = inst.addModulator("RandomizerModulator", property);
+            }
+
+            var newValue = increase
+                ? Math.floor(mod.properties.amount.value + 1)
+                : Math.ceil(mod.properties.amount.value - 1);
+
+            if (newValue === 0) {
+                studio.project.deleteObject(mod);
+            } else {
+                mod.properties.amount.setValue(newValue);
+            }
+        });
     };
 }
 
