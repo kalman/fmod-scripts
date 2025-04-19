@@ -1,4 +1,4 @@
-function executor() {
+function pitchVolumeExecutor() {
     var event = studio.window.browserCurrent();
 
     if (!event || !event.isOfType("Event")) {
@@ -90,6 +90,6 @@ function executor() {
 
 studio.menu.addMenuItem({
     name: "Modulate gain from parameter...",
-    execute: executor,
+    execute: pitchVolumeExecutor,
     keySequence: "F9",
 });

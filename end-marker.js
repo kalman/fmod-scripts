@@ -47,14 +47,14 @@ function executor(forward) {
     };
 }
 
-studio.menu.addMenuItem({
-    name: "Move End Marker+",
-    execute: executor(true),
-    keySequence: "Ctrl+Alt+E",
-});
+// studio.menu.addMenuItem({
+//     name: "Move End Marker+",
+//     execute: executor(true),
+//     keySequence: "Ctrl+Alt+E",
+// });
 
-studio.menu.addMenuItem({
-    name: "Move End Marker-",
-    execute: executor(false),
-    keySequence: "Ctrl+Alt+W",
-});
+// studio.menu.addMenuItem({
+//     name: "Move End Marker-",
+//     execute: executor(false),
+//     keySequence: "Ctrl+Alt+W",
+// });
