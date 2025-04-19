@@ -69,7 +69,6 @@ function firstSound(track) {
 
 function firstSoundName(track) {
     function nameFromPath(path) {
-        console.log("name from path: "+path);
         path = path.slice(path.lastIndexOf("/") + 1, path.length);
         console.log(path);
         if (path.indexOf(".") !== -1) {
