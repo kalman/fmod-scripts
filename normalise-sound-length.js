@@ -58,13 +58,7 @@ function executor(minLength) {
 }
 
 studio.menu.addMenuItem({
-    name: "Sound Length: Normalise (Min Length)",
-    execute: executor(true),
-    keySequence: "=",
-});
-
-studio.menu.addMenuItem({
     name: "Sound Length: Normalise (Max Length)",
     execute: executor(false),
-    keySequence: "Alt+=",
+    keySequence: "=",
 });
