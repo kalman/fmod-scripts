@@ -1,3 +1,13 @@
+var colors = [
+    "Blue",
+    "Yellow",
+    "Purple",
+    "Green",
+    "Magenta",
+    "Cyan",
+    "Red",
+];
+
 function findCurrentEvent() {
     var browserCurrent = studio.window.browserCurrent();
 
@@ -22,7 +32,7 @@ function findCurrentEvent() {
     return null;
 }
 
-function executor() {
+function executor(forceRename) {
     var currentEvent = findCurrentEvent();
 
     if (!currentEvent) {
@@ -30,7 +40,72 @@ function executor() {
     }
 
     var tracks = currentEvent.groupTracks.slice();
+    var trackIdMap = {};
+    var groupedTracks = {};
+    var groupedTrackOrder = [];
+    var sendToMasterTracks = [];
 
+    tracks.forEach(function (track) {
+        trackIdMap[track.id] = track;
+        var output = track.mixerGroup.output;
+
+        if (output.isOfType("EventMixerMaster")) {
+            sendToMasterTracks.push(track);
+        } else {
+            var outputId = output.groupTrack.id;
+
+            if (!(outputId in groupedTracks)) {
+                groupedTrackOrder.push(outputId);
+                groupedTracks[outputId] = [];
+            }
+            groupedTracks[outputId].push(track);
+        }
+    });
+
+    var colorIndex = 0;
+
+    for (var id in groupedTracks) {
+        var color = colors[colorIndex];
+        colorIndex++;
+
+        trackIdMap[id].mixerGroup.properties.color.setValue(color);
+
+        var childTracks = groupedTracks[id];
+        sortTracks(childTracks);
+        childTracks.forEach(function (childTrack) {
+            childTrack.mixerGroup.properties.color.setValue(color + " Light 1");
+        });
+    }
+
+    for (var i = 0; i < sendToMasterTracks.length; i++) {
+        if (sendToMasterTracks[i].id in groupedTracks) {
+            sendToMasterTracks.splice(i, 1);
+            i--;
+        }
+    }
+
+    sortTracks(sendToMasterTracks);
+
+    var trackOrder = [];
+
+    for (var i = 0; i < groupedTrackOrder.length; i++) {
+        var groupId = groupedTrackOrder[i];
+        trackOrder.push(trackIdMap[groupId]);
+        trackOrder = trackOrder.concat(groupedTracks[groupId]);
+    }
+
+    trackOrder = trackOrder.concat(sendToMasterTracks);
+
+    for (var i = 0; i < trackOrder.length; i++) {
+        var track = trackOrder[i];
+        if (track.mixerGroup.name.indexOf("Audio ") === 0 || forceRename) {
+            track.mixerGroup.properties.name.setValue(firstSoundName(track));
+        }
+        currentEvent.relationships.groupTracks.insert(i, trackOrder[i]);
+    }
+}
+
+function sortTracks(tracks) {
     tracks.sort(function (a, b) {
         var firstA = firstSound(a);
         var firstB = firstSound(b);
@@ -46,14 +121,6 @@ function executor() {
                 ? 1
                 : 0;
     });
-
-    for (var i = 0; i < tracks.length; i++) {
-        var track = tracks[i];
-        if (track.mixerGroup.name.indexOf("Audio ") === 0) {
-            track.mixerGroup.properties.name.setValue(firstSoundName(track));
-        }
-        currentEvent.relationships.groupTracks.insert(i, tracks[i]);
-    }
 }
 
 function firstSound(track) {
@@ -70,19 +137,28 @@ function firstSound(track) {
 function firstSoundName(track) {
     function nameFromPath(path) {
         path = path.slice(path.lastIndexOf("/") + 1, path.length);
-        console.log(path);
         if (path.indexOf(".") !== -1) {
             path = path.slice(0, path.lastIndexOf("."));
-            console.log("(" + path + ")");
         }
-        var split = path.split("-");
-        console.log(split);
-        for (var i = split.length - 1; i > 0; i--) {
-            if (isNaN(Number(split[i]))) {
-                return split[i];
+        var split = path.split(/[-_]/);
+        var endIndex = split.length - 1;
+        while (endIndex > 0) {
+            if (isNaN(Number(split[endIndex]))) {
+                break;
+            }
+            endIndex--;
+        }
+        var startIndex = Math.min(endIndex, 2);
+        var length = 0;
+        split = split.map(capitalize);
+        for (var i = endIndex; i >= startIndex; i--) {
+            length += split[i].length;
+            if (length >= 10) {
+                startIndex = i + 1;
+                break;
             }
         }
-        return split[0];
+        return split.slice(startIndex, endIndex + 1).join("");
     }
 
     function soundName(item) {
@@ -101,6 +177,10 @@ function firstSoundName(track) {
         if (item.isOfType("SoundScatterer")) {
             return soundName(item.sound);
         }
+        if (item.isOfType("EventSound")) {
+            studio.item = item;
+            return nameFromPath(item.event.name);
+        }
         return null;
     }
 
@@ -118,6 +198,15 @@ function firstSoundName(track) {
     return track.mixerGroup.name;
 }
 
+function capitalize(string) {
+    string = string.replace(/[0-9]/g, '')
+
+    if (string.length == 0)
+        return string;
+
+    return string[0].toUpperCase() + string.slice(1);
+}
+
 function trackSounds(track) {
     var items = [];
     for (var i = 0; i < track.modules.length; i++) {
@@ -129,7 +218,13 @@ function trackSounds(track) {
 }
 
 studio.menu.addMenuItem({
-    name: "Sort Tracks",
+    name: "Sort Tracks\\Default",
     execute: executor,
     keySequence: "F10",
+});
+
+studio.menu.addMenuItem({
+    name: "Sort Tracks\\Force Rename",
+    execute: function () { executor(true); },
+    keySequence: "F11",
 });

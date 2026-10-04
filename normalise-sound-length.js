@@ -1,32 +1,33 @@
 function soundName(item) {
     if (item.isOfType("SingleSound")) {
-        return nameFromPath(item.audioFile.assetPath);
+        return item.audioFile.assetPath; // nameFromPath(item.audioFile.assetPath);
     }
+
     if (item.isOfType("MultiSound")) {
         for (var i = 0; i < item.sounds.length; i++) {
             var name = soundName(item.sounds[i]);
             if (name) {
-                return name;
+                return "MultiSound[0]:" + name;
             }
         }
         return null;
     }
+
     if (item.isOfType("SoundScatterer")) {
         return soundName(item.sound);
     }
+
     return null;
 }
 
-function soundLength(inst, minLength) {
+function soundLength(inst) {
     if (inst.isOfType("SingleSound")) {
         return applyModulators(inst, inst.audioFile.length);
     }
 
     if (inst.isOfType("MultiSound")) {
-        var lengths = inst.sounds.map(function (sound) {
-            return soundLength(sound, minLength);
-        });
-        var minOrMax = (minLength ? Math.min : Math.max).apply(undefined, lengths);
+        var lengths = inst.sounds.map(soundLength);
+        var minOrMax = Math.max.apply(null, lengths);
         return applyModulators(inst, minOrMax);
     }
 
@@ -47,18 +48,14 @@ function applyModulators(inst, length) {
     return length / Math.pow(2, pitch / 12);
 }
 
-function executor(minLength) {
-    return function () {
+studio.menu.addMenuItem({
+    name: "Instrument\\Normalise Length",
+    execute: function () {
         studio.window.editorSelection().forEach(function (inst) {
             if (inst) {
-                inst.properties.length.setValue(soundLength(inst, minLength));
+                inst.properties.length.setValue(soundLength(inst));
             }
         });
-    };
-}
-
-studio.menu.addMenuItem({
-    name: "Sound Length: Normalise (Max Length)",
-    execute: executor(false),
+    },
     keySequence: "=",
 });

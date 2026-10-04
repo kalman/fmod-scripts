@@ -56,13 +56,13 @@ function executor(above) {
 }
 
 studio.menu.addMenuItem({
-    name: "Add Audio Track: Above",
+    name: "Add Audio Track\\Above",
     execute: executor(false),
     keySequence: "Alt+Shift+T",
 });
 
 studio.menu.addMenuItem({
-    name: "Add Audio Track: Below",
+    name: "Add Audio Track\\Below",
     execute: executor(true),
     keySequence: "Alt+T",
 });

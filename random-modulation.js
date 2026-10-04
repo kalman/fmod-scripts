@@ -33,37 +33,38 @@ function executor(property, increase) {
                 studio.project.deleteObject(mod);
             } else {
                 mod.properties.amount.setValue(newValue);
+                // TODO: open the modulation drawer in the deck
             }
         });
     };
 }
 
 studio.menu.addMenuItem({
-    name: "Modulate Random: Pitch+",
+    name: "Modulate Random\\Pitch+",
     execute: executor("pitch", true),
     keySequence: "Ctrl+Alt+P",
 });
 
 studio.menu.addMenuItem({
-    name: "Modulate Random: Pitch-",
+    name: "Modulate Random\\Pitch-",
     execute: executor("pitch", false),
     keySequence: "Ctrl+Alt+O",
 });
 
 studio.menu.addMenuItem({
-    name: "Modulate Random: Volume+",
+    name: "Modulate Random\\Volume+",
     execute: executor("volume", true),
     keySequence: "Ctrl+Alt+V",
 });
 
 studio.menu.addMenuItem({
-    name: "Modulate Random: Volume-",
+    name: "Modulate Random\\Volume-",
     execute: executor("volume", false),
     keySequence: "Ctrl+Alt+C",
 });
 
 studio.menu.addMenuItem({
-    name: "Modulate Random: Start Offset",
+    name: "Modulate Random\\Start Offset",
     execute: executor("startOffset", true),
     keySequence: "Ctrl+Alt+X",
 });

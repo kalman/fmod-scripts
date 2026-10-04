@@ -3,7 +3,7 @@ function execute() {
 }
 
 studio.menu.addMenuItem({
-    name: "Flatten Browser Folders",
+    name: "UI\\Flatten Browser Folders",
     execute: execute,
-    keySequence: "F",
+    keySequence: "Meta+F",
 });
